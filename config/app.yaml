@@ -1,0 +1,24 @@
+[tweet-search]
+search_url:https://api.twitter.com/2/tweets/search/recent
+query:biden
+tweets_fields:tweet.fields=text,created_at,referenced_tweets
+user_fields:user.fields=username,name,verified,location
+start_time:2021-02-22T01:00:00
+end_time:2021-02-22T01:15:00
+freq:15T
+
+# storage of the staging response jsons
+# mode: mode can be either local or s3
+# staging_local_dir, sentiment_local_dr: directory in the local machine where staging responses and sentiment scores will be stored
+# staging_s3_folder, sentiment_s3_folder: the s3 bucket/folder path where staging responses and sentiment scores will be sotred
+[storage]
+mode:s3
+staging_local_dir:app_data/responses
+sentiment_local_dir:app_data/sentiments
+s3_bucket:twitter-data-sm
+staging_s3_key:staging
+sentiment_s3_key:sentiments
+
+[kinesis]
+streamname:tweet_stream
+
