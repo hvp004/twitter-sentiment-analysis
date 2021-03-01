@@ -1,0 +1,9 @@
+copy tweet(
+tweet_id, created_at, location, name, referenced_tweets, text, userid, username, verified, label, mixed, negative, neutral, positive)
+from <PATH_TO_S3>
+access_key_id <KEY>
+secret_access_key <SECRET>
+timeformat as 'YYYY/MM/DD-HH:MI:SS'
+ignoreheader as 1
+region <S3_REGION>
+format as csv;
