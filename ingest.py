@@ -6,6 +6,7 @@ import datetime
 import pandas as pd
 from io import StringIO
 import boto3
+import time
 
 class Ingest:
     def __init__(self, **kwargs):
@@ -41,13 +42,21 @@ class Ingest:
         if response.status_code != 200: 
             # unsuccesfull response, raise exception
             raise Exception(response.status_code, response.text)
+
+        # print(response.json())
         
         # process reponse packet
         tweet = response.json()
 
+        # print(pd.DataFrame(tweet['data']).rename(columns={'id': 'tweet_id'}).columns, pd.DataFrame(tweet['includes']['users']).rename(columns={'id': 'user_id'}).columns)
+
+        # print(pd.DataFrame(tweet['data']).rename(columns={'id': 'tweet_id'}).head(5))
+
         # join tweets with user information
-        data = pd.DataFrame(tweet['data']).rename(columns={'id': 'tweet_id'}).join(
-            pd.DataFrame(tweet['includes']['users']).rename(columns={'id': 'user_id'}))
+        # sometimes twitter gives `withheld` as a field arbitarily
+        # hence selecting fields of interest explicitly 
+        data = pd.DataFrame(tweet['data']).rename(columns={'id': 'tweet_id'})[['tweet_id', 'created_at', 'author_id', 'text', 'referenced_tweets']].join(
+            pd.DataFrame(tweet['includes']['users']).rename(columns={'id': 'user_id'})[['name', 'user_id', 'username', 'verified', 'location']])
 
         # rewteets, replies and quoted tweets comes out to be trunctcated under text field, have to fetch from ['includes']['tweets'] based on 'referenced_tweets' and 'id' 
 
@@ -78,6 +87,9 @@ class Ingest:
         # check shape (tweets, 9)
         # print(merged_data.shape)
 
+        # remove emojis and `"` from text
+        merged_data['text'] = merged_data['text'].apply(lambda x: ''.join([" " if ord(i) < 32 or ord(i) > 126 or i == '"' else i for i in str(x)]))
+
         # number of tweets read
         tweets = merged_data.shape[0]
 
@@ -98,7 +110,7 @@ class Ingest:
         kinesis = session.client('kinesis')
         kinesis.put_record(StreamName=kinesis_kwargs['streamname'], Data=merged_data[['tweet_id', 'text']].to_json(orient='records'), PartitionKey='key_tweet')
         
-        print(start_time, tweets)    
+        print(start_time, tweets) 
         return tweets
         
 
