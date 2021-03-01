@@ -1,0 +1,9 @@
+copy sentiment(
+window_time, avg_positive, avg_negative, avg_neutral, avg_mixed, count_tweets, perc_tweet_mixed, perc_tweet_positive, perc_tweet_negative, perc_tweet_neutral)
+from <S3_PATH>
+access_key_id <KEY>
+secret_access_key <SECRET>
+timeformat as 'YYYY-MM-DD HH:MI:SS'
+ignoreheader as 1
+region <S3_REGION>
+format as csv;
