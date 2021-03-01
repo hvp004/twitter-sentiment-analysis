@@ -13,8 +13,8 @@ if __name__ == "__main__":
     spark.sparkContext.setLogLevel("ERROR")
 
     # load data from staging and sentiments
-    staging_data = spark.read.json('s3://twitter-data-sm/staging/*.json').drop('withheld')
-    sentiment_data = spark.read.json('s3://twitter-data-sm/sentiments/*.json').dropDuplicates(['tweet_id'])
+    staging_data = spark.read.json('s3://twitter-data-sm/staging/*.json')
+    sentiment_data = spark.read.json('s3://twitter-data-sm/sentiments/*.json')
 
     # merge tweet metadata and sentiments
     data = staging_data.join(sentiment_data, "tweet_id")
