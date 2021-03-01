@@ -5,11 +5,16 @@
 The project runs on AWS exposing some AWS services:
 
 1. S3: For storage of staging data, sentiment data, tweet transactional data, aggregated data
+
 2. EC2: To run `ingest.py` and `consumer.py`. You can also run them on your own laptop. This is optional. 
+
 3. EMR Cluster: To process all data produced in batches. Merge data and run aggregation before storing them back to S3.
+
 4. Redshift Cluster: Ultimately data would end up in the Redshift. 
+
 5. AWS Comprehend: In order to get sentiment from tweet text data, AWS Comprehend is used. This can be replaced with local NLP model or an open source or enterprise version ML model with HTTP end point. Comprehend is used through `boto3` python API here. 
-6. ![](C:\Users\hpandya\OneDrive\Gleason\spark-project\architecture.png)
+
+   ![System Architecture](./docs/architecture.png)
 
 
 
