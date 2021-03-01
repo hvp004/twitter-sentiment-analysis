@@ -28,8 +28,8 @@
    1. `tweet`: A table to have a historical transactional data for all tweets and their results.
    2. `sentiment`: Aggregated data for every 15 minute time window with avg scores, percentage number of tweets and total tweets in that timeframe. 
    
-   Use `create-table.sql` and `create-sentiment.sql` from `redshift\` to create these tables. 
+   Use `create-table.sql` and `create-sentiment.sql` from `redshift` to create these tables. 
    
    Now, it is time to fill data in these tables. 
    
-   Use COPY command from AWS to load data from S3 into AWS Redshift Cluster.  Use `copy-tweet` and `copy-sentiment` to fill up `tweet` and `sentiment` tables into redshift. COPY commands are also in `redshift\` directory of the project. 
+   Use COPY command from AWS to load data from S3 into AWS Redshift Cluster.  Use `copy-tweet` and `copy-sentiment` to fill up `tweet` and `sentiment` tables into redshift. COPY commands are also in `redshift` directory of the project. 
