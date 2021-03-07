@@ -14,7 +14,7 @@ Here, each Kinesis data stream consists of at most 100 tweets. Once the data is 
 
 AWS Redshift is a fully managed datawarehouse system where tables are made using SQL commands. These tables would hold the transactional and aggregated data stored into the bucket. To load the data stored in the s3 buckets to the Redshift datawarehouse, COPY commands are used. A connection is made to the Redshift Cluster (SQL Workbench or Redshift cluster query editor) and COPY commands are performed over the cluster to pull data from the buckets and into the tables. 
 
-AWS Quicksight is serverless, scalable and fully managed BI service tool that is used for visualization. 
+Grafana over on an EC2 instance is used for visualization. 
 
 ### System Architecture
 
@@ -39,6 +39,8 @@ Ingestion is kept decoupled from NLP workflow because NLP is a separate entity a
 AWS Kinesis works as a temporary storage mechanism for faster retrieval for further downstream components and NLP. Once data is produced, it is consumed by the consumer. There can be more than one consumer based on the kind of analytics performed on the text and all of them would be independent with one another. Moreover, if of of the tasks fail, it would easier to run it again in complete isolation in terms of processing and storage. 
 
 EMR provides a fleet of high power EC2 Instances with a highly in used distributed processing frame work like Haddop Spark. It has the capacity to perform data processing on Terabyte or Petabytes of data. EMR writes the data to S3 buckets rather than directly writing it to Redshift for several reasons. There can be number of different sub-systems which would like to consume the processed and aggregated data. With S3 storage is extremely cheaper than Redshift, where we pay for space by hour. Moreover, S3 read/writes are cheaper than Redshift reads where we pay for each request and its data packet size. Redshift's primary goal is to provide a big picture of the data and be able to query historical data faster. Redshift's data querying is much faster than S3. Hence, S3 is used to leverage cost when this system may be a part of a bigger architecture with many microservices. 
+
+Once the data is loaded into the Redshift databases, Data Visualization systems like Grafana can pull the data and visualize it. 
 
 #### Steps
 
