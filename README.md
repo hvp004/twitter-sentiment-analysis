@@ -44,17 +44,31 @@ Once the data is loaded into the Redshift databases, Data Visualization systems 
 
 #### Steps
 
-1. Run consumer.py: It will not show any output yet since we have not started fetching tweets from twitter api yet. 
+1. In order to be able run the docker services, first 
 
-2. Run ingest.py: Now we have started ingesting the tweets from `start_time` to `end_time` inclusive. You can see then in real time with 5sec delay on consumer.py 
+   Run `docker-compose build`
+
+   It will build a service called `twipy` . 
+
+2. Run `consumer.py` from `docker-compose`.
+
+   Run `docker-compose run twipy python /app/module/consumer.py`
+
+   Currently it would show `No Updates` , that is because we are yet to start `ingest.py`
+
+3. Run `ingest.py` from `docker-compose`
+
+   Run `docker-compose run twipy python/app/module/ingest.py`
+
+   Now we have started ingesting the tweets from `start_time` to `end_time` inclusive. You can see then in real time with 10sec delay on consumer.py 
 
    After ingesting stops, data is stored in either s3 bucket or local directory depending on the `[storage][mode]` specified in the `app.yaml` file. `staging` and  `sentiment` directories would hold json documents with raw tweets and their metadata and sentiments comprehended from AWS Comprehend NLP service.
 
-3. EMR: ssh into the emr cluster with putty using `hadoop@<EMR-CLUSTER-DNS>` on port 22 using private key and copy `emr-script.py` from s3 bucket to emr master cluster instance. 
+4. EMR: ssh into the emr cluster with putty using `hadoop@<EMR-CLUSTER-DNS>` on port 22 using private key and copy `emr-script.py` from s3 bucket to emr master cluster instance. 
 
    Use `aws s3 cp s3://<S3-BUCKET-WITH-emr-script.py>/emr-script.py .`
 
-4. `spark-submit`: Now we are ready to submit this task to the spark cluster. 
+5. `spark-submit`: Now we are ready to submit this task to the spark cluster. 
 
    Use `spark-submit ./emr-script.py`	
 
@@ -63,18 +77,30 @@ Once the data is loaded into the Redshift databases, Data Visualization systems 
    1. File containing entire dataset with all tweets and their individual results. 
    2. File containing aggregated results with 15 mins time window containing average sentiment score and percentage weight of each sentiment with total number of absolute tweets for that 15 mins window. 
 
-5. Redshift: Now, we are ready to load the processed data into the AWS Redshift datawarehouse. 
+6. Redshift: Now, we are ready to load the processed data into the AWS Redshift datawarehouse. 
 
    For this, you need to create two tables. 
-   
+
    1. `tweet`: A table to have a historical transactional data for all tweets and their results.
    2. `sentiment`: Aggregated data for every 15 minute time window with avg scores, percentage number of tweets and total tweets in that timeframe. 
-   
+
    Use `create-table.sql` and `create-sentiment.sql` from `redshift` to create these tables. 
-   
+
    Now, it is time to fill data in these tables. 
-   
+
    Use COPY command from AWS to load data from S3 into AWS Redshift Cluster.  Use `copy-tweet` and `copy-sentiment` to fill up `tweet` and `sentiment` tables into redshift. COPY commands are also in `redshift` directory of the project. 
+
+7. Provision a Linux/Windows machine on AWS. Make sure it has the access to Redshift Cluster. Install Grafana on it. Connect it to the Redshift cluster and start visualizing the data. 
+
+   I ran the entire pipeline to collect around 33K tweets with query string `biden` for 4 days. 
+
+   The interactive dashboard  below shows Percentage tweets for each category in the first row with gauge panels. 
+
+   In the second row, I am showing total number of tweets as a label and the tweets collected for each 15 mins interval over the timeline. 
+
+   In the last row, I am showing a pie chart with average sentiment scores (NLP) for each category for the time period along with its timeline. 
+
+   ![](C:\Users\hpandya\OneDrive\Gleason\twitter-sentiment-analysis\docs\grafana-long-gif.gif)
 
 ### Limitation
 
