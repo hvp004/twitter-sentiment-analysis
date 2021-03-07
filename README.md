@@ -100,7 +100,7 @@ Once the data is loaded into the Redshift databases, Data Visualization systems 
 
    In the last row, I am showing a pie chart with average sentiment scores (NLP) for each category for the time period along with its timeline. 
 
-   ![](C:\Users\hpandya\OneDrive\Gleason\twitter-sentiment-analysis\docs\grafana-long-gif.gif)
+   ![](./docs/grafana-long-gif.gif)
 
 ### Limitation
 
