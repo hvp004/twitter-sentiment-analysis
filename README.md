@@ -3,10 +3,10 @@
 Table of Contents:
 
 1. [Objective](#Objective)
-2. Project Overview
-3. System Architecture
-4. Installation and Usage
-5. Limitation
+2. [Project Overview](#Project-Overview)
+3. [System Architecture](#System-Architecture)
+4. [Installation and Usage](#Installation-and-usage)
+6. [Limitation](#Limitation)
 
 ### Objective
 
