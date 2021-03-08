@@ -1,4 +1,7 @@
 # Twitter Sentiment Analysis
+Grafana Dashboard Example:
+
+![](./docs/grafana-long-gif.gif)
 
 Table of Contents:
 
