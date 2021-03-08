@@ -125,6 +125,14 @@ I have setup a bucket named `twitter-data-sm` and a kinesis stream named `tweet_
 
 Here `freq` param takes any valid `timeseries-offset-alias` . More about it can be found [here](https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-offset-aliases) .
 
+The deployment is eased by `docker-compose`. 
+
+It requires some directories to be mounted for the docker services. That means there is a bi-directional synchronization between directory in host system and container which is running. 
+
+1. `./config`: contains configuration files 
+2. `./module`: contains python files
+3. `./app_data`: this directory has two subdirectories `responses/` and `sentiments/`. This is optional as it is only used when run with `mode:local`. 
+
 Once downloaded and `app.yaml` and `secret.ini` file updated, go to the directory containing the files and follow below steps. 
 
 1. In order to be able run the docker services, first 
