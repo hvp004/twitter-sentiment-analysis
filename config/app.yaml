@@ -1,10 +1,17 @@
+# twitter api specific params
+# search_url: pass the base url that servers as the main search function with api version. If changed, you need to change other fields too
+# query: search term or query eg: biden
+# tweets_fields, user_fields: data that we need from the api
+# start_time, end_time: timestamp in YYY-MM-DDThh:mm:ss format
+# freq: Offset alias
+
 [tweet-search]
 search_url:https://api.twitter.com/2/tweets/search/recent
-query:biden
+query:<SEARCH TERM>
 tweets_fields:tweet.fields=text,created_at,referenced_tweets
 user_fields:user.fields=username,name,verified,location
-start_time:2021-02-22T01:00:00
-end_time:2021-02-22T01:15:00
+start_time:<START_TIMESTAMP>
+end_time:<END_TIMESTAMP>
 freq:15T
 
 # storage of the staging response jsons
@@ -19,6 +26,7 @@ s3_bucket:twitter-data-sm
 staging_s3_key:staging
 sentiment_s3_key:sentiments
 
+# kinesis stream that you have setup
 [kinesis]
 streamname:tweet_stream
 
