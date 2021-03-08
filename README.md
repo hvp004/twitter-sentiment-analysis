@@ -1,5 +1,13 @@
 # Twitter Sentiment Analysis
 
+Table of Contents:
+
+1. Objective
+2. Project Overview
+3. System Architecture
+4. Installation and Usage
+5. Limitation
+
 ### Objective
 
 Build a scalable, fault tolerant and high available (ad-hoc) batch processing framework to ingest, process and perform sentiment analysis on tweets pertaining to a topic with specified time period. 
@@ -42,7 +50,79 @@ EMR provides a fleet of high power EC2 Instances with a highly in used distribut
 
 Once the data is loaded into the Redshift databases, Data Visualization systems like Grafana can pull the data and visualize it. 
 
-#### Steps
+#### Installation and Usage
+
+In order to install the project, you can download this repo to your local machine. 
+
+You need to have `docker-compose` install over at the same local machine as well. 
+
+Since this project uses a lot of cloud assests make sure you have below assets up and running over at AWS. 
+
+1. S3 Bucket: You will need a bucket set up to hold staging, sentiments and analytics data. 
+2. Kinesis Stream: You will need to set up a Kinesis Data Stream to hold each burst of tweet as a batch for NLP model to be called for each packet. 
+3. EMR Cluster: To process, merge and transform data, the data EMR is used. Make sure that can access S3 buckets. 
+4. Redshift Cluster: Spin up a cluster of create necessary tables on the already running cluster. 
+5. Grafana: Make sure you have the dashboard ready to visualize the data. This can be installed locally as well. 
+
+Once all of aws assets are ready to be used, you need to update `secret.ini`. 
+
+```
+[twitter-api]
+consumer_key=<TWITTER_CONSUMER_KEY>
+consumer_secret=<TWITTER_CONSUMER_SECRET>
+access_token=<TWITTER_ACCESS_TOKEN>
+access_token_secret=<TWITTER_ACCESS_TOKEN_SECRET>
+bearer_token=<TWITTER_BEARER_TOKEN>
+
+[aws]
+aws_access_key_id=<AWS_KEY>
+aws_secret_access_key=<AWS_SECRET>
+region_name=<AWS_REGION>
+```
+
+Currently this servers as a placeholder. You need to update `[twitter-aoi]` with your own twitter api credentials and `[aws]` as per the already created IAM role or new one. 
+
+Next, in order to pass pipeline specific parameters, update the `app.yaml`.
+
+```
+# twitter api specific params
+# search_url: pass the base url that servers as the main search function with api version. If changed, you need to change other fields too
+# query: search term or query eg: biden
+# tweets_fields, user_fields: data that we need from the api
+# start_time, end_time: timestamp in YYY-MM-DDThh:mm:ss format
+# freq: Offset alias
+
+[tweet-search]
+search_url:https://api.twitter.com/2/tweets/search/recent
+query:<SEARCH TERM>
+tweets_fields:tweet.fields=text,created_at,referenced_tweets
+user_fields:user.fields=username,name,verified,location
+start_time:<START_TIMESTAMP>
+end_time:<END_TIMESTAMP>
+freq:15T
+
+# storage of the staging response jsons
+# mode: mode can be either local or s3
+# staging_local_dir, sentiment_local_dr: directory in the local machine where staging responses and sentiment scores will be stored
+# staging_s3_folder, sentiment_s3_folder: the s3 bucket/folder path where staging responses and sentiment scores will be sotred
+[storage]
+mode:s3
+staging_local_dir:app_data/responses
+sentiment_local_dir:app_data/sentiments
+s3_bucket:twitter-data-sm
+staging_s3_key:staging
+sentiment_s3_key:sentiments
+
+# kinesis stream that you have setup
+[kinesis]
+streamname:tweet_stream
+```
+
+I have setup a bucket named `twitter-data-sm` and a kinesis stream named `tweet_stream` so I have kept them as is in `app.yaml`. You will need to update that. You can use `mode` value to debug your pipeline to occasional local data load rather than having that on S3. 
+
+Here `freq` param takes any valid `timeseries-offset-alias` . More about it can be found [here](https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-offset-aliases) .
+
+Once downloaded and `app.yaml` and `secret.ini` file updated, go to the directory containing the files and follow below steps. 
 
 1. In order to be able run the docker services, first 
 
