@@ -49,7 +49,7 @@ Ingestion is kept decoupled from NLP workflow because NLP is a separate entity a
 
 AWS Kinesis works as a temporary storage mechanism for faster retrieval for further downstream components and NLP. Once data is produced, it is consumed by the consumer. There can be more than one consumer based on the kind of analytics performed on the text and all of them would be independent with one another. Moreover, if of of the tasks fail, it would easier to run it again in complete isolation in terms of processing and storage. 
 
-EMR provides a fleet of high power EC2 Instances with a highly in used distributed processing frame work like Haddop Spark. It has the capacity to perform data processing on Terabyte or Petabytes of data. EMR writes the data to S3 buckets rather than directly writing it to Redshift for several reasons. There can be number of different sub-systems which would like to consume the processed and aggregated data. With S3 storage is extremely cheaper than Redshift, where we pay for space by hour. Moreover, S3 read/writes are cheaper than Redshift reads where we pay for each request and its data packet size. Redshift's primary goal is to provide a big picture of the data and be able to query historical data faster. Redshift's data querying is much faster than S3. Hence, S3 is used to leverage cost when this system may be a part of a bigger architecture with many microservices. 
+EMR provides a fleet of high power EC2 Instances with a highly in used distributed processing frame work like Hadoop Spark. It has the capacity to perform data processing on Terabyte or Petabytes of data. EMR writes the data to S3 buckets rather than directly writing it to Redshift for several reasons. There can be number of different sub-systems which would like to consume the processed and aggregated data. With S3 storage is extremely cheaper than Redshift, where we pay for space by hour. Moreover, S3 read/writes are cheaper than Redshift reads where we pay for each request and its data packet size. Redshift's primary goal is to provide a big picture of the data and be able to query historical data faster. Redshift's data querying is much faster than S3. Hence, S3 is used to leverage cost when this system may be a part of a bigger architecture with many microservices. 
 
 Once the data is loaded into the Redshift databases, Data Visualization systems like Grafana can pull the data and visualize it. 
 
@@ -59,7 +59,7 @@ In order to install the project, you can download this repo to your local machin
 
 You need to have `docker-compose` install over at the same local machine as well. 
 
-Since this project uses a lot of cloud assests make sure you have below assets up and running over at AWS. 
+Since this project uses a lot of cloud assets make sure you have below assets up and running over at AWS. 
 
 1. S3 Bucket: You will need a bucket set up to hold staging, sentiments and analytics data. 
 2. Kinesis Stream: You will need to set up a Kinesis Data Stream to hold each burst of tweet as a batch for NLP model to be called for each packet. 
