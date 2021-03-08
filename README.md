@@ -2,7 +2,7 @@
 
 Table of Contents:
 
-1. Objective
+1. [Objective](#Objective)
 2. Project Overview
 3. System Architecture
 4. Installation and Usage
