@@ -1,4 +1,6 @@
 # Twitter Sentiment Analysis
+The article on the project is also published on Towards Data Science. You can read it [here](https://towardsdatascience.com/sentiment-analysis-on-live-tweets-with-ad-hoc-batch-processing-using-aws-f77036dc337) .
+
 Grafana Dashboard Example:
 
 ![](./docs/grafana-long-gif.gif)
